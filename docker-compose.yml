@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres_bootcamp
+    environment:
+      POSTGRES_DB: ecommerce_db
+      POSTGRES_USER: bootcamp_user
+      POSTGRES_PASSWORD: secure_password123
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bootcamp_user -d ecommerce_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
