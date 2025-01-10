@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 	"os"
@@ -9,6 +8,7 @@ import (
 	"github.com/Khaled2049/ecommerce-app/internal/handler"
 	"github.com/Khaled2049/ecommerce-app/internal/repository/postgres"
 	"github.com/Khaled2049/ecommerce-app/internal/service"
+	"github.com/Khaled2049/ecommerce-app/pkg/database"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -17,28 +17,24 @@ import (
 func main() {
 	// Database connection
 	if err := godotenv.Load(); err != nil {
-		log.Printf("⚠️  Warning: .env file not found")
+		log.Printf("Warning: .env file not found")
 	}
 
-	// Get database URL from environment
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
-		log.Fatal("❌ DATABASE_URL environment variable is not set")
+		log.Fatal("DATABASE_URL environment variable is not set")
 	}
 
-	// Database connection
-	log.Printf("📡 Attempting to connect to database...")
-	db, err := sql.Open("postgres", dbURL)
+	// Initialize database
+	dbConfig := database.NewConfig(dbURL)
+	db, err := database.NewConnection(dbConfig)
 	if err != nil {
-		log.Fatal("❌ Failed to open database connection: ", err)
+		log.Fatal("Error connecting to db", err)
 	}
-	defer db.Close()
 
-	// Test database connection
-	if err := db.Ping(); err != nil {
-		log.Fatal("❌ Could not connect to database: ", err)
-	}
+	defer db.Close()
 	log.Println("✅ Successfully connected to database!")
+
 	// Initialize repositories
 	customerRepo := postgres.NewCustomerRepository(db)
 

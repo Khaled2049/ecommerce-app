@@ -23,7 +23,7 @@ CREATE TABLE categories (
     description VARCHAR(500),
     parent_category_id INTEGER,
     FOREIGN KEY (parent_category_id) REFERENCES categories(category_id)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
 );
 
 -- Create products table
@@ -50,7 +50,7 @@ CREATE TABLE product_categories (
     FOREIGN KEY (product_id) REFERENCES products(product_id)
         ON DELETE CASCADE,
     FOREIGN KEY (category_id) REFERENCES categories(category_id)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
 );
 
 -- Create payment_methods table
@@ -76,7 +76,7 @@ CREATE TABLE orders (
     order_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
 );
 
 -- Create index on customer_id for faster order lookups
@@ -93,7 +93,7 @@ CREATE TABLE order_items (
     FOREIGN KEY (order_id) REFERENCES orders(order_id)
         ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(product_id)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
 );
 
 -- Create payments table
@@ -107,9 +107,9 @@ CREATE TABLE payments (
     payment_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     transaction_id VARCHAR(255) UNIQUE,
     FOREIGN KEY (order_id) REFERENCES orders(order_id)
-        ON DELETE RESTRICT,
+        ON DELETE CASCADE,
     FOREIGN KEY (payment_method_id) REFERENCES payment_methods(payment_method_id)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
 );
 
 -- Create index on order_id for faster payment lookups

@@ -2,6 +2,7 @@ package domain
 
 import (
 	"encoding/json"
+	"errors"
 	"time"
 )
 
@@ -21,3 +22,16 @@ type CustomerCreate struct {
 	Phone       string          `json:"phone" validate:"required"`
 	Preferences json.RawMessage `json:"preferences,omitempty"`
 }
+
+type CustomerUpdate struct {
+	ID          int64           `json:"id" validate:"required"`
+	Name        string          `json:"name" validate:"required"`
+	Email       string          `json:"email" validate:"required,email"`
+	Phone       string          `json:"phone" validate:"required"`
+	Preferences json.RawMessage `json:"preferences,omitempty"`
+}
+
+var (
+	ErrCustomerNotFound   = errors.New("customer not found")
+	ErrEmailAlreadyExists = errors.New("email already exists")
+)
