@@ -37,18 +37,22 @@ func main() {
 
 	// Initialize repositories
 	customerRepo := postgres.NewCustomerRepository(db)
+	orderRepo := postgres.NewOrderRepository(db)
 
 	// Initialize services
 	customerService := service.NewCustomerService(customerRepo)
+	orderService := service.NewOrderService(orderRepo)
 
 	// Initialize handlers
 	customerHandler := handler.NewCustomerHandler(customerService)
+	orderHandler := handler.NewOrderHandler(orderService)
 
 	// Router setup
 	router := mux.NewRouter()
 
 	// Register routes
 	customerHandler.RegisterRoutes(router)
+	orderHandler.RegisterRoutes(router)
 
 	// Add middleware
 	router.Use(loggingMiddleware)
@@ -64,6 +68,12 @@ func main() {
 	log.Printf("  GET    /customers")
 	log.Printf("  PUT    /customers/{id}")
 	log.Printf("  DELETE /customers/{id}")
+	// Order routes
+	log.Printf("  POST   /orders")
+	log.Printf("  GET    /orders/{id}")
+	log.Printf("  GET    /orders")
+	log.Printf("  PUT    /orders/{id}")
+	log.Printf("  DELETE /orders/{id}")
 
 	// Start server
 	log.Fatal(http.ListenAndServe(port, router))

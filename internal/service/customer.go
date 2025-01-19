@@ -25,14 +25,6 @@ func NewCustomerService(repo interfaces.CustomerRepository) *CustomerService {
 }
 
 func (s *CustomerService) CreateCustomer(ctx context.Context, input *domain.CustomerCreate) (*domain.Customer, error) {
-	// Add business logic validation here
-	if err := validateCustomerInput(input); err != nil {
-		return nil, err
-	}
-
-	// Check if email already exists
-	// Add more business logic as needed
-
 	return s.repo.Create(ctx, input)
 }
 
@@ -83,9 +75,5 @@ func (s *CustomerService) DeleteCustomer(ctx context.Context, id int64) error {
 		return fmt.Errorf("failed to delete customer: %w", err)
 	}
 
-	return nil
-}
-func validateCustomerInput(input *domain.CustomerCreate) error {
-	// Implement validation logic
 	return nil
 }

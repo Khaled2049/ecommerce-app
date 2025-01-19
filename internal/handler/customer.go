@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -37,6 +38,8 @@ func (h *CustomerHandler) Create(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	fmt.Println("input", input)
 
 	customer, err := h.customerService.CreateCustomer(r.Context(), &input)
 	if err != nil {
@@ -79,6 +82,7 @@ func (h *CustomerHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 	var input domain.CustomerUpdate
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		fmt.Println(err)
 		utils.WriteError(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}

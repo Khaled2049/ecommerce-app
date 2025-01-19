@@ -17,10 +17,10 @@ type Customer struct {
 }
 
 type CustomerCreate struct {
-	Name        string          `json:"name" validate:"required"`
-	Email       string          `json:"email" validate:"required,email"`
-	Phone       string          `json:"phone" validate:"required"`
-	Preferences json.RawMessage `json:"preferences,omitempty"`
+    Name        string                 `json:"name" validate:"required"`
+    Email       string                 `json:"email" validate:"required,email"`
+    Phone       string                 `json:"phone" validate:"required"`
+    Preferences map[string]interface{} `json:"preferences,omitempty"`
 }
 
 type CustomerUpdate struct {

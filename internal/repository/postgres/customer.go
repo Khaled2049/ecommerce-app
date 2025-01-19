@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 
 	"github.com/Khaled2049/ecommerce-app/internal/domain"
@@ -17,34 +18,40 @@ func NewCustomerRepository(db *sql.DB) *customerRepository {
 }
 
 func (r *customerRepository) Create(ctx context.Context, c *domain.CustomerCreate) (*domain.Customer, error) {
-	query := `
+    // Convert preferences to JSON
+    preferencesJSON, err := json.Marshal(c.Preferences)
+    if err != nil {
+        return nil, fmt.Errorf("error marshaling preferences: %w", err)
+    }
+
+    query := `
         INSERT INTO customers (name, email, phone, preferences)
         VALUES ($1, $2, $3, $4)
-        RETURNING id, name, email, phone, created_at, is_active, preferences`
-
-	customer := &domain.Customer{}
-	err := r.db.QueryRowContext(
-		ctx,
-		query,
-		c.Name,
-		c.Email,
-		c.Phone,
-		c.Preferences,
-	).Scan(
-		&customer.ID,
-		&customer.Name,
-		&customer.Email,
-		&customer.Phone,
-		&customer.CreatedAt,
-		&customer.IsActive,
-		&customer.Preferences,
-	)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return customer, nil
+        RETURNING customer_id, name, email, phone, created_at, is_active, preferences`
+    
+    customer := &domain.Customer{}
+    err = r.db.QueryRowContext(
+        ctx, 
+        query,
+        c.Name,
+        c.Email,
+        c.Phone,
+        preferencesJSON, // Now passing properly formatted JSON
+    ).Scan(
+        &customer.ID,
+        &customer.Name,
+        &customer.Email,
+        &customer.Phone,
+        &customer.CreatedAt,
+        &customer.IsActive,
+        &customer.Preferences,
+    )
+    
+    if err != nil {
+        return nil, fmt.Errorf("error creating customer: %w", err)
+    }
+    
+    return customer, nil
 }
 
 func (r *customerRepository) List(ctx context.Context, limit, offset int) ([]domain.Customer, error) {
