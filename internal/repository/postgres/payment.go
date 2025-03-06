@@ -35,7 +35,7 @@ func (r *paymentRepository) Create(ctx context.Context, p *domain.PaymentCreate)
 		&payment.OrderID,
 		&payment.Amount,
 		&payment.PaymentType,
-		&payment.CreatedAt,
+		&payment.PaymentDate,
 	)
 
 	if err != nil {
@@ -58,7 +58,7 @@ func (r *paymentRepository) GetByID(ctx context.Context, paymentID int64) (*doma
 		&payment.OrderID,
 		&payment.Amount,
 		&payment.PaymentType,
-		&payment.CreatedAt,
+		&payment.PaymentDate,
 	)
 
 	if err != nil {
@@ -89,7 +89,7 @@ func (r *paymentRepository) Update(ctx context.Context, p *domain.PaymentUpdate)
 		&payment.OrderID,
 		&payment.Amount,
 		&payment.PaymentType,
-		&payment.CreatedAt,
+		&payment.PaymentDate,
 	)
 
 	if err != nil {
@@ -134,7 +134,7 @@ func (r *paymentRepository) List(ctx context.Context, limit, offset int) ([]doma
 			&p.OrderID,
 			&p.Amount,
 			&p.PaymentType,
-			&p.CreatedAt,
+			&p.PaymentDate,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("error listing payments: %w", err)
