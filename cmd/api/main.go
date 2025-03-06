@@ -39,16 +39,19 @@ func main() {
 	customerRepo := postgres.NewCustomerRepository(db)
 	orderRepo := postgres.NewOrderRepository(db)
 	paymentsRepo := postgres.NewPaymentRepository(db)
+	productRepo := postgres.NewProductRepository(db)
 
 	// Initialize services
 	customerService := service.NewCustomerService(customerRepo)
 	orderService := service.NewOrderService(orderRepo)
 	paymentService := service.NewPaymentService(paymentsRepo)
+	productService := service.NewProductService(productRepo)
 
 	// Initialize handlers
 	customerHandler := handler.NewCustomerHandler(customerService)
 	orderHandler := handler.NewOrderHandler(orderService)
 	paymentsHandler := handler.NewPaymentHandler(paymentService)
+	productHandler := handler.NewProductHandler(productService)
 
 	// Router setup
 	router := mux.NewRouter()
@@ -57,6 +60,7 @@ func main() {
 	customerHandler.RegisterRoutes(router)
 	orderHandler.RegisterRoutes(router)
 	paymentsHandler.RegisterRoutes(router)
+	productHandler.RegisterRoutes(router)
 
 	// Add middleware
 	router.Use(loggingMiddleware)
@@ -84,6 +88,12 @@ func main() {
 	log.Printf("  GET    /payments")
 	log.Printf("  PUT    /payments/{id}")
 	log.Printf("  DELETE /payments/{id}")
+	// product routes
+	log.Printf("  POST   /products")
+	log.Printf("  GET    /products/{id}")
+	log.Printf("  GET    /products")
+	log.Printf("  PUT    /products/{id}")
+	log.Printf("  DELETE /products/{id}")
 
 	// Start server
 	log.Fatal(http.ListenAndServe(port, router))
